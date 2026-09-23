@@ -110,7 +110,7 @@ subcommands:
                         summary: for bash
                         type: flag
                     -   name: fish
-                        summary: for fish (>= 4.1)
+                        summary: for fish (>= 4.0)
                         type: flag
     pod:
         summary: Pod documentation

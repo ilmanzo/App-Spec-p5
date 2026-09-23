@@ -49,10 +49,10 @@ EOM
     return <<"EOM";
 # fish completion for $appname
 # Generated with perl module App::Spec v$appspec_version
-# Requires fish >= 4.1 (uses `commandline -x` and `argparse -S`)
+# Requires fish >= 4.0 (uses `commandline -x`)
 
-if string match -qr '^([0-3]\\.|4\\.0\\.)' -- \$version
-    echo "$appname completion requires fish >= 4.1 (running \$version)" >&2
+if string match -qr '^[0-3]\\.' -- \$version
+    echo "$appname completion requires fish >= 4.0 (running \$version)" >&2
     return 1
 end
 
@@ -70,12 +70,15 @@ function ${p}_words
     set -l rest (commandline -xpc)
     set -e rest[1]
     set -l words
+    # -S (fish >= 4.1): no abbreviated long options, otherwise an unknown -e
+    # is taken for e.g. --exists-action; fish 4.0 has no way to turn this off
+    set -l strict -S
+    string match -q '4.0.*' -- \$version; and set strict
     while true
         set -l specs (${p}_optspecs \$words)
-        # -S: no abbreviated long options, an unknown -e is not --exists-action
         # a trailing option still waiting for its value makes argparse fail
-        argparse -S -i \$specs -- \$rest 2>/dev/null
-        or argparse -S -i \$specs -- \$rest[1..-2] 2>/dev/null
+        argparse \$strict -i \$specs -- \$rest 2>/dev/null
+        or argparse \$strict -i \$specs -- \$rest[1..-2] 2>/dev/null
         or return
         set -l positional (string match -v -- '-*' \$argv)
         if not contains -- "\$words" $parents; or not set -q positional[1]
@@ -342,9 +345,10 @@ L<App::Spec::Completion::Zsh>
 
 =head1 REQUIREMENTS
 
-The generated script requires B<fish 4.1> or newer, because it uses
-C<commandline -x> and C<argparse --strict-longopts>. On older fish versions
-it prints an error and returns.
+The generated script requires B<fish 4.0> or newer, because it uses
+C<commandline -x>. On older fish versions it prints an error and returns.
+On fish 4.0, long options can be abbreviated, so an unknown option can be
+taken for an abbreviation of a known one (fish 4.1 adds C<argparse --strict-longopts>).
 
 =head1 METHODS
 

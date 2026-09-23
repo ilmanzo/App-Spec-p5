@@ -16,7 +16,7 @@ Write a specification for your command line application (currently in YAML) and 
  * validates options and parameters
  * outputs help
 * Automatic creation of pod, man pages
-* Automatic creation of zsh, bash and fish (>= 4.1) completion scripts. Completion includes:
+* Automatic creation of zsh, bash and fish (>= 4.0) completion scripts. Completion includes:
  * Subcommands, parameter values, option names and option values.
  * Description for completion items are shown, in zsh and fish builtin, in bash with a cute little trick.
  * Generating dynamic completion. When completing a parameter or option, you can call an external
@@ -114,7 +114,7 @@ If you change the completion script later, you just need to source it:
 
 ### Fish
 
-Requires fish >= 4.1. Source the completion script:
+Requires fish >= 4.0. Source the completion script:
 ```
  > source examples/fish/myapp.fish
  > myapp <TAB>

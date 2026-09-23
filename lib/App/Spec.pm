@@ -403,7 +403,7 @@ Returns usage output for the specified subcommands:
 
 =item generate_completion
 
-Generates shell completion script for the spec. Supported shells: C<zsh>, C<bash>, C<fish> (fish >= 4.1).
+Generates shell completion script for the spec. Supported shells: C<zsh>, C<bash>, C<fish> (fish >= 4.0).
 
     my $completion = $spec->generate_completion(
         shell => "zsh",

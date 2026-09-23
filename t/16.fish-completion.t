@@ -7,7 +7,7 @@ use App::Spec;
 
 my $fish_ok = do {
     my $v = `fish --version 2>/dev/null` // '';
-    $v =~ m/version (\d+)\.(\d+)/ and ($1 > 4 or $1 == 4 and $2 >= 1);
+    $v =~ m/version (\d+)/ and $1 >= 4;
 };
 
 my @apps = qw(nometa mysimpleapp myapp pcorelist subrepo);
@@ -19,7 +19,7 @@ for my $app (@apps) {
     s/\s+\z// for $completion, $expected;
     cmp_ok $completion, 'eq', $expected, "fish completion for $app like expected";
     SKIP: {
-        skip "fish >= 4.1 not available", 1 unless $fish_ok;
+        skip "fish >= 4.0 not available", 1 unless $fish_ok;
         is system(fish => -n => $file), 0, "fish -n $app.fish";
     }
 }

@@ -1,9 +1,9 @@
 # fish completion for pcorelist
 # Generated with perl module App::Spec v0.000
-# Requires fish >= 4.1 (uses `commandline -x` and `argparse -S`)
+# Requires fish >= 4.0 (uses `commandline -x`)
 
-if string match -qr '^([0-3]\.|4\.0\.)' -- $version
-    echo "pcorelist completion requires fish >= 4.1 (running $version)" >&2
+if string match -qr '^[0-3]\.' -- $version
+    echo "pcorelist completion requires fish >= 4.0 (running $version)" >&2
     return 1
 end
 
@@ -34,12 +34,15 @@ function __pcorelist_words
     set -l rest (commandline -xpc)
     set -e rest[1]
     set -l words
+    # -S (fish >= 4.1): no abbreviated long options, otherwise an unknown -e
+    # is taken for e.g. --exists-action; fish 4.0 has no way to turn this off
+    set -l strict -S
+    string match -q '4.0.*' -- $version; and set strict
     while true
         set -l specs (__pcorelist_optspecs $words)
-        # -S: no abbreviated long options, an unknown -e is not --exists-action
         # a trailing option still waiting for its value makes argparse fail
-        argparse -S -i $specs -- $rest 2>/dev/null
-        or argparse -S -i $specs -- $rest[1..-2] 2>/dev/null
+        argparse $strict -i $specs -- $rest 2>/dev/null
+        or argparse $strict -i $specs -- $rest[1..-2] 2>/dev/null
         or return
         set -l positional (string match -v -- '-*' $argv)
         if not contains -- "$words" '' _meta '_meta completion' '_meta pod' help 'help _meta' 'help _meta completion' 'help _meta pod'; or not set -q positional[1]
@@ -115,7 +118,7 @@ complete -c pcorelist -n '__pcorelist_using _meta completion 0' -f -a generate -
 complete -c pcorelist -n '__pcorelist_prefix _meta completion generate' -l name -d 'name of the program (optional, override name in spec)' -x
 complete -c pcorelist -n '__pcorelist_prefix _meta completion generate' -l zsh -d 'for zsh'
 complete -c pcorelist -n '__pcorelist_prefix _meta completion generate' -l bash -d 'for bash'
-complete -c pcorelist -n '__pcorelist_prefix _meta completion generate' -l fish -d 'for fish (>= 4.1)'
+complete -c pcorelist -n '__pcorelist_prefix _meta completion generate' -l fish -d 'for fish (>= 4.0)'
 complete -c pcorelist -n '__pcorelist_using _meta pod 0' -f -a generate -d 'Generate self pod'
 complete -c pcorelist -n '__pcorelist_using diff 0' -f -a '(__pcorelist_diff_param_perl1_completion)' -d 'Perl version 1'
 complete -c pcorelist -n '__pcorelist_using diff 1' -f -a '(__pcorelist_diff_param_perl2_completion)' -d 'Perl version 2'

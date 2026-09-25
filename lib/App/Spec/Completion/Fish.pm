@@ -37,7 +37,9 @@ sub generate_completion {
     );
     my $optspecs = _optspecs_cases($state{optspecs});
     my $parents = join ' ', map { length ? _quote($_) : "''" } @{ $state{parents} };
-    my $dynamic = $state{dynamic} ? <<"EOM" : '';
+    my $dynamic = '';
+    if ($state{dynamic}) {
+        $dynamic = <<"EOM";
 
 # dynamic completion via App::Spec::Run, prints "value<TAB>description" lines
 function ${p}_dynamic
@@ -45,6 +47,7 @@ function ${p}_dynamic
     PERL5_APPSPECRUN_SHELL=fish PERL5_APPSPECRUN_COMPLETION_PARAMETER=\$argv[1] \$cmd
 end
 EOM
+    }
 
     return <<"EOM";
 # fish completion for $appname

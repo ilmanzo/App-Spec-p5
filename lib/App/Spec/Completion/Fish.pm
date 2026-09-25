@@ -36,7 +36,7 @@ sub generate_completion {
         state => \%state,
     );
     my $optspecs = _optspecs_cases($state{optspecs});
-    my $parents = join ' ', map { length ? _quote($_) : "''" } @{ $state{parents} };
+    my $parents = join ' ', map { length($_) ? _quote($_) : "''" } @{ $state{parents} };
     my $dynamic = '';
     if ($state{dynamic}) {
         $dynamic = <<"EOM";
